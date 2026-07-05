@@ -5,11 +5,11 @@ async function panggilSemuaDataset() {
     try {
         // 1. Memanggil ke-5 file secara bersamaan
         const responses = await Promise.all([
-            fetch('dataset/jaluraktif.geojson'),
-            fetch('dataset/jalurnonaktif.geojson'),
-            fetch('dataset/stasiun.geojson'),
-            fetch('dataset/hotosm_idn_railways_lines_geojson.geojson'), //dataset tambahan
-            fetch('dataset/hotosm_idn_railways_points_geojson.geojson') //dataset tambahan
+            fetch('jaluraktif.geojson'),
+            fetch('jalurnonaktif.geojson'),
+            fetch('stasiun.geojson'),
+            fetch('hotosm_idn_railways_lines_geojson.geojson'), //dataset tambahan
+            fetch('hotosm_idn_railways_points_geojson.geojson') //dataset tambahan
         ]);
 
         // 2. Mengecek apakah semua file berhasil dimuat (status 200)
