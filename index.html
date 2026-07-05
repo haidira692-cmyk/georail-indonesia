@@ -179,9 +179,13 @@
         <div id="home-section" class="page-section active">
             <div class="text-page-wrapper">
                 <div class="content-wrapper">
-                    <h1>Selamat Datang di GeoRail Indonesia</h1>
-                    <p>GeoRail Indonesia adalah platform pemetaan interaktif yang menyajikan visualisasi spasial mengenai seluruh jaringan rel kereta api di Indonesia, baik yang masih beroperasi aktif maupun yang sudah dinonaktifkan (heritage/abandoned lines).</p>
-                    <p>Melalui situs ini, Anda dapat menjelajahi sejarah dan perkembangan infrastruktur perkeretaapian nasional dari masa ke masa. Silakan klik menu <strong>Maps</strong> di bagian atas untuk mulai mengeksplorasi peta.</p>
+                    <h1>Peta Interaktif Jalur Rel Kereta Api & Stasiun Indonesia - GeoRail</h1>
+                    
+                    <p>Selamat datang di <strong>GeoRail Indonesia</strong>, sebuah platform pemetaan interaktif yang menyajikan visualisasi data spasial mengenai seluruh jaringan rel kereta api di Indonesia. Di sini, Anda dapat menjelajahi peta jalur kereta api, baik rute yang masih beroperasi aktif maupun jalur nonaktif bersejarah (<i>heritage/abandoned lines</i>) peninggalan masa lalu.</p>
+                    
+                    <p>Melalui sistem informasi geografis berbasis web ini, Anda bisa melacak persebaran infrastruktur perkeretaapian nasional, mencari lokasi stasiun kereta api di seluruh pulau, serta mempelajari perkembangan sejarah rel dari masa ke masa.</p>
+                    
+                    <p>Silakan klik menu <strong>Maps</strong> di bagian atas untuk mulai mengeksplorasi peta interaktif dan menggunakan fitur pencarian stasiun kereta api secara langsung.</p>
                 </div>
             </div>
         </div>
@@ -203,21 +207,28 @@
             <div class="text-page-wrapper">
                 <div class="content-wrapper">
                     <h1>Hubungi Dukungan (Support)</h1>
-                    <p>Jika Anda mengalami kendala teknis atau menemukan error pada sistem web, silakan laporkan langsung kepada tim kami melalui WhatsApp.</p>
+                    <p>Jika Anda mengalami kendala teknis atau menemukan error pada sistem web, silakan hubungi kami melalui formulir email (Formspree) atau chat langsung melalui WhatsApp.</p>
                     
-                    <div class="form-group">
-                        <label>Nama Lengkap</label>
-                        <input type="text" id="waNama" placeholder="Masukkan nama Anda">
-                    </div>
-                    <div class="form-group">
-                        <label>Topik Laporan</label>
-                        <input type="text" id="waTopik" placeholder="Misal: Peta blank / Data salah">
-                    </div>
-                    <div class="form-group">
-                        <label>Detail Masalah Teknis</label>
-                        <textarea id="waPesan" rows="5" placeholder="Ceritakan kendala teknis yang Anda alami..."></textarea>
-                    </div>
-                    <button class="submit-btn" onclick="kirimKeWA()" style="background-color: #25D366;">Kirim via WhatsApp</button>
+                    <form id="formSupport" action="https://formspree.io/f/xrewjonw" method="POST">
+                        <div class="form-group">
+                            <label for="nama">Nama Lengkap</label>
+                            <input type="text" id="nama" name="nama" placeholder="Masukkan nama Anda" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="topik">Topik Laporan</label>
+                            <input type="text" id="topik" name="topik" placeholder="Misal: Peta blank / Data salah" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pesan">Detail Masalah Teknis</label>
+                            <textarea id="pesan" name="pesan" rows="5" placeholder="Ceritakan kendala teknis yang Anda alami..." required></textarea>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button type="submit" class="submit-btn" style="background-color: #ea4335; flex: 1;">Kirim via E-mail</button>
+                            
+                            <button type="button" class="submit-btn" onclick="kirimKeWAFromForm()" style="background-color: #25D366; flex: 1;">Kirim via WhatsApp</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -258,6 +269,24 @@
         </div>
     </div>
 
+    <div id="custom-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 90%; max-width: 400px; text-align: center; font-family: sans-serif; animation: popMasuk 0.3s ease;">
+            <div style="width: 50px; height: 50px; background: #fee2e2; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 15px;">
+                <span style="color: #ef4444; font-size: 24px; font-weight: bold;">⚠️</span>
+            </div>
+            <h3 style="margin: 0 0 10px 0; color: #111827; font-size: 18px;">Pesan Belum Lengkap</h3>
+            <p id="popup-message" style="margin: 0 0 20px 0; color: #4b5563; font-size: 14px; line-height: 1.5;"></p>
+            <button onclick="tutupPopup()" style="background: #ea4335; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; width: 100%; transition: background 0.2s;">Ok, Mengerti</button>
+        </div>
+    </div>
+
+    <style>
+        @keyframes popMasuk {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-search@3.0.2/dist/leaflet-search.min.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
@@ -266,18 +295,69 @@
     <script src="app.js"></script>
     
     <script>
-    function kirimKeWA() {
-        var nama = document.getElementById("waNama").value;
-        var topik = document.getElementById("waTopik").value;
-        var pesan = document.getElementById("waPesan").value;
-        if(nama === "" || pesan === "") {
-            alert("Mohon lengkapi Nama dan Detail Masalah terlebih dahulu.");
+    // Variabel global untuk menyimpan elemen input mana yang kosong
+    let elemenFokusTerakhir = null;
+
+    // Fungsi untuk memunculkan pop-up kustom
+    function tampilkanPopup(pesan, elemenInput) {
+        document.getElementById("popup-message").innerText = pesan;
+        document.getElementById("custom-popup").style.display = "flex";
+        elemenFokusTerakhir = elemenInput; // Simpan elemen input agar bisa di-fokus nanti
+    }
+
+    // Fungsi untuk menutup pop-up kustom
+    function tutupPopup() {
+        document.getElementById("custom-popup").style.display = "none";
+        if (elemenFokusTerakhir) {
+            elemenFokusTerakhir.focus(); // Kursor otomatis berkedip di kolom yang kosong
+        }
+    }
+
+    // 1. Validasi pengiriman untuk tombol WhatsApp
+    function kirimKeWAFromForm() {
+        var namaInput = document.getElementById("nama");
+        var topikInput = document.getElementById("topik");
+        var pesanInput = document.getElementById("pesan");
+        
+        if (namaInput.value.trim() === "") {
+            tampilkanPopup("Kolom 'Nama Lengkap' wajib diisi sebelum mengirim laporan via WhatsApp.", namaInput);
             return;
         }
-        var nomorWA = "082271359373"; // GANTI DENGAN NOMOR WA KAMU
-        var teksPesan = "Halo Admin GeoRail Indonesia,%0A%0A" + "Nama: *" + nama + "*%0A" + "Topik: *" + topik + "*%0A" + "Pesan: %0A" + pesan;
+        if (topikInput.value.trim() === "") {
+            tampilkanPopup("Kolom 'Topik Laporan' wajib diisi sebelum mengirim laporan via WhatsApp.", topikInput);
+            return;
+        }
+        if (pesanInput.value.trim() === "") {
+            tampilkanPopup("Kolom 'Detail Masalah Teknis' wajib diisi sebelum menjelaskan kendala Anda.", pesanInput);
+            return;
+        }
+        
+        // Jika aman, buka WhatsApp
+        var nomorWA = "+6282296997110"; //
+        var teksPesan = "Halo Admin GeoRail Indonesia,%0A%0A" + 
+                        "Nama: *" + namaInput.value + "*%0A" + 
+                        "Topik: *" + topikInput.value + "*%0A" + 
+                        "Pesan: %0A" + pesanInput.value;
         window.open("https://wa.me/" + nomorWA + "?text=" + teksPesan, "_blank");
     }
+
+    // 2. Validasi pengiriman untuk tombol Email (Formspree)
+    document.getElementById("formSupport").addEventListener("submit", function(event) {
+        var namaInput = document.getElementById("nama");
+        var topikInput = document.getElementById("topik");
+        var pesanInput = document.getElementById("pesan");
+
+        if (namaInput.value.trim() === "") {
+            event.preventDefault();
+            tampilkanPopup("Kolom 'Nama Lengkap' tidak boleh kosong untuk pengiriman formulir E-mail.", namaInput);
+        } else if (topikInput.value.trim() === "") {
+            event.preventDefault();
+            tampilkanPopup("Kolom 'Topik Laporan' tidak boleh kosong untuk pengiriman formulir E-mail.", topikInput);
+        } else if (pesanInput.value.trim() === "") {
+            event.preventDefault();
+            tampilkanPopup("Kolom 'Detail Masalah Teknis' tidak boleh kosong untuk pengiriman formulir E-mail.", pesanInput);
+        }
+    });
     </script>
 </body>
 </html>
