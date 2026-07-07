@@ -85,8 +85,68 @@
             padding: 0 40px;
             z-index: 3000;
         }
+        /* Navigation Bar Atas */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 65px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 3000;
+        }
         .navbar-brand { font-size: 18px; font-weight: bold; color: #1e3a8a; letter-spacing: 0.5px; }
         .navbar-menu { display: flex; list-style: none; margin: 0; padding: 0; gap: 5px; }
+
+        /* --- CSS BARU: RESPONSIVE UNTUK LAYAR MOBILE --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 10px 15px;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .navbar-brand {
+                font-size: 16px;
+                padding-left: 5px;
+            }
+            .navbar-menu {
+                width: 100%;
+                overflow-x: auto; /* Mengaktifkan scroll horizontal di HP */
+                white-space: nowrap; /* Mencegah menu turun ke bawah */
+                padding-bottom: 5px;
+                -webkit-overflow-scrolling: touch; /* Scroll lebih halus di iOS */
+            }
+            .navbar-menu::-webkit-scrollbar {
+                display: none; /* Menyembunyikan batang scrollbar agar estetis */
+            }
+            .navbar-menu li a {
+                padding: 8px 14px;
+                font-size: 14px;
+            }
+            .main-container {
+                /* Menyesuaikan margin atas karena tinggi navbar berubah di HP */
+                margin-top: 95px; 
+                height: calc(100vh - 95px);
+            }
+            /* Menyesuaikan padding halaman teks di mobile */
+            .text-page-wrapper {
+                padding: 15px 10px;
+            }
+            .content-wrapper {
+                padding: 20px;
+                border-radius: 12px;
+            }
+            #stats-dashboard {
+                display: none !important;
+            }
+        }
         .navbar-menu li a {
             display: block; padding: 10px 20px; text-decoration: none; color: #4b5563; font-size: 15px; font-weight: 500; border-radius: 6px; transition: all 0.3s ease; cursor: pointer;
         }
@@ -157,6 +217,48 @@
         .legend-line-active { width: 20px; height: 4px; background: #2563eb; border-radius: 2px; margin-right: 12px; }
         .legend-line-inactive { width: 20px; height: 0; border-top: 3px dashed #ef4444; margin-right: 12px; }
         .legend-circle { width: 12px; height: 12px; background: #f59e0b; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 3px rgba(0,0,0,0.3); margin-right: 16px; margin-left: 2px;}
+
+        /* Gaya Tombol Kustom Lokasi Saya */
+        .btn-lokasi-kustom {
+            background-color: #ffffff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        .btn-lokasi-kustom:hover {
+            transform: scale(1.05);
+            background-color: #f8fafc;
+        }
+
+        /* Gaya Tombol Kustom Reset View */
+        .btn-reset-kustom {
+            background-color: #ffffff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
+            margin-bottom: 8px; /* Memberi jarak dengan tombol GPS di bawahnya */
+        }
+        .btn-reset-kustom:hover {
+            transform: scale(1.05);
+            background-color: #f8fafc;
+        }
+        
     </style>
 </head>
 <body>
@@ -194,6 +296,27 @@
 
         <div id="maps-section" class="page-section">
             <div id="map"></div>
+            
+            <div id="stats-dashboard" style="background: rgba(255, 255, 255, 0.95); padding: 10px 14px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); width: 160px; font-family: sans-serif; backdrop-filter: blur(5px); border: 1px solid rgba(226, 232, 240, 0.8);">
+                <h4 style="margin: 0 0 6px 0; color: #1e3a8a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #cbd5e1; padding-bottom: 4px; display: flex; align-items: center; gap: 5px;">
+                    📊 Statistik GeoRail
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; color: #64748b;">Total Stasiun:</span>
+                        <span id="stat-stasiun" style="font-size: 12px; font-weight: bold; color: #0f172a;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; color: #64748b;">Segmen Aktif:</span>
+                        <span id="stat-aktif" style="font-size: 12px; font-weight: bold; color: #2563eb;">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 11px; color: #64748b;">Segmen Nonaktif:</span>
+                        <span id="stat-nonaktif" style="font-size: 12px; font-weight: bold; color: #dc2626;">-</span>
+                    </div>
+                </div>
+            </div>
+            
             <div class="legend">
                 <h4>Keterangan</h4>
                 <div class="legend-item"><div class="legend-line-active"></div> Jalur Aktif</div>
@@ -282,6 +405,27 @@
         </div>
     </div>
 
+    <div id="app-version" style="
+        position: fixed;
+        bottom: 8px;
+        left: 15px;
+        z-index: 9999;
+        font-family: monospace;
+        font-size: 11px;
+        font-weight: bold;
+        color: rgba(71, 85, 105, 0.6);
+        background: rgba(248, 250, 252, 0.85);
+        padding: 3px 8px;
+        border-radius: 6px;
+        pointer-events: none;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    ">
+        v3.0
+    </div>
+
     <style>
         @keyframes popMasuk {
             from { transform: scale(0.8); opacity: 0; }
@@ -360,6 +504,30 @@
             tampilkanPopup("Kolom 'Detail Masalah Teknis' tidak boleh kosong untuk pengiriman formulir E-mail.", pesanInput);
         }
     });
+
+    // Mendaftarkan Service Worker untuk fitur Offline Cache
+    if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => {
+                        console.log('Service Worker aktif!', reg.scope);
+                        
+                        // 🌟 OTOMATIS CEK UPDATE: Jika ada perubahan di sw.js, eksekusi pembaruan
+                        reg.addEventListener('updatefound', () => {
+                            const workerBaru = reg.installing;
+                            workerBaru.addEventListener('statechange', () => {
+                                if (workerBaru.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('Kode baru terdeteksi! Memperbarui halaman...');
+                                    // Refresh otomatis halaman agar cache baru langsung teraplikasikan
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => console.error('Gagal daftarkan SW:', err));
+            });
+        }
+
     </script>
 </body>
 </html>
