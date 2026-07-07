@@ -1,5 +1,5 @@
 // 1. SETIAP KAMU UPDATE CODE, CUKUP GANTI ANGKA VERSI INI (misal: v2, v3, dst.)
-const CACHE_NAME = 'georail-cache-v3.0'; 
+const CACHE_NAME = 'georail-cache-v3.1'; 
 
 const ASSETS_TO_CACHE = [
     './',
